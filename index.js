@@ -10,7 +10,7 @@ const client = new MongoClient(dbUrl)
 app.get('/', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
-        res.status(201).send({ message: 'Welcome to express' })
+        res.status(200).send({ message: 'Welcome to express' })
     }
     catch (error) {
         console.log(error)
