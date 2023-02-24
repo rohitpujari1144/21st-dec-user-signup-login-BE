@@ -1,10 +1,13 @@
 const express = require('express')
 const { MongoClient, ObjectId } = require('mongodb')
 const mongodb = require('mongodb')
+const cors=require('cors')
 const app = express()
+app.use(cors())
 app.use(express.json())
-const dbUrl = 'mongodb+srv://rohitpujari:rohitkaranpujari@atlascluster.mrsic9z.mongodb.net/?retryWrites=true&w=majority'
+const dbUrl = 'mongodb+srv://arunkumar:arun0002@cluster0.qmxmkpj.mongodb.net/?retryWrites=true&w=majority'
 const client = new MongoClient(dbUrl)
+
 
 // getting userinfo
 app.get('/', async (req, res) => {
