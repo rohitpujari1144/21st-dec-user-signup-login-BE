@@ -5,7 +5,7 @@ const cors=require('cors')
 const app = express()
 app.use(cors())
 app.use(express.json())
-const dbUrl = 'mongodb://127.0.0.1:27017/'
+const dbUrl = 'mongodb+srv://rohitpujari:rohitkaranpujari@cluster0.inae9ih.mongodb.net/test'
 const client = new MongoClient(dbUrl)
 
 
