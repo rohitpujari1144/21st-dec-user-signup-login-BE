@@ -5,7 +5,7 @@ const cors=require('cors')
 const app = express()
 app.use(cors())
 app.use(express.json())
-const dbUrl = 'mongodb+srv://rohitpujari:rohitkaranpujari@cluster0.inae9ih.mongodb.net/test'
+const dbUrl = 'mongodb+srv://arunkumar:arun0002@cluster0.qmxmkpj.mongodb.net/?retryWrites=true&w=majority'
 const client = new MongoClient(dbUrl)
 
 
