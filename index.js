@@ -64,7 +64,7 @@ app.get('/userLogin/:username/:password', async (req, res) => {
                 res.status(200).send({ message: 'Login successful', data: user })
             }
             else {
-                res.status(400).send({ message: `User not found with email id ${req.params.username} and password ${req.params.password}` })
+                res.status(400).send({ message: `User not found with username ${req.params.username} and password ${req.params.password}` })
             }
         }
         else {
