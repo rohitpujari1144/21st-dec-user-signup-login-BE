@@ -8,8 +8,7 @@ app.use(express.json())
 const dbUrl = 'mongodb+srv://rohitpujari:rohitkaranpujari@cluster0.inae9ih.mongodb.net/?retryWrites=true&w=majority'
 const client = new MongoClient(dbUrl)
 
-
-// getting userinfo
+// getting all userinfo
 app.get('/', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
@@ -30,19 +29,19 @@ app.get('/', async (req, res) => {
 app.post('/userSignup', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
-        if (req.body.userName && req.body.userEmail && req.body.userPassword) {
+        if (req.body.name && req.body.username && req.body.email && req.body.password) {
             const db = await client.db("UserLoginSignup");
-            let user = await db.collection("User Registration").findOne({ userEmail: req.body.userEmail })
+            let user = await db.collection("User Registration").findOne({ email: req.body.email })
             if (!user) {
                 await db.collection("User Registration").insertOne(req.body);
                 res.status(201).send({ message: 'User signup successful', data: req.body })
             }
             else {
-                res.status(400).send({ message: `User with email id ${req.body.userEmail} already exist` })
+                res.status(400).send({ message: `User with email id ${req.body.email} already exist` })
             }
         }
         else {
-            res.status(400).send({ message: 'userName, userEmail, userPassword are mandatory' })
+            res.status(400).send({ message: 'name, username, email, password are mandatory' })
         }
     }
     catch (error) {
@@ -55,17 +54,17 @@ app.post('/userSignup', async (req, res) => {
 })
 
 // user login
-app.get('/userLogin/:userEmail/:userPassword', async (req, res) => {
+app.get('/userLogin/:username/:password', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
-        if (req.params.userEmail && req.params.userPassword) {
+        if (req.params.username && req.params.password) {
             const db = await client.db("UserLoginSignup");
-            let user = await db.collection("User Registration").findOne({ userEmail: req.params.userEmail, userPassword: req.params.userPassword })
+            let user = await db.collection("User Registration").findOne({ username: req.params.username, password: req.params.password })
             if (user) {
                 res.status(200).send({ message: 'Login successful', data: user })
             }
             else {
-                res.status(400).send({ message: `User not found with email id ${req.params.userEmail} and password ${req.params.userPassword}` })
+                res.status(400).send({ message: `User not found with email id ${req.params.username} and password ${req.params.password}` })
             }
         }
         else {
