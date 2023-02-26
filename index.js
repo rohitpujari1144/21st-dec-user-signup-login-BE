@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
     try {
         const db = await client.db("UserLoginSignup");
         let allUsers = await db.collection("User Registration").find().toArray()
-        res.status(200).send({ message: 'Welcome to express', data: allUsers })
+        res.status(200).send(allUsers )
     }
     catch (error) {
         console.log(error)
