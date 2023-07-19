@@ -1,20 +1,25 @@
 const express = require('express')
 const { MongoClient, ObjectId } = require('mongodb')
 const mongodb = require('mongodb')
-const cors=require('cors')
+const cors = require('cors')
 const app = express()
 app.use(cors())
 app.use(express.json())
-const dbUrl = 'mongodb+srv://rohitpujari:rohitkaranpujari@cluster0.inae9ih.mongodb.net/?retryWrites=true&w=majority'
+const dbUrl = 'mongodb+srv://rohit10231:rohitkaranpujari@cluster0.kjynvxt.mongodb.net/?retryWrites=true&w=majority'
 const client = new MongoClient(dbUrl)
 
 // getting all userinfo
 app.get('/', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
-        const db = await client.db("UserLoginSignup");
-        let allUsers = await db.collection("User Registration").find().toArray()
-        res.status(200).send(allUsers )
+        const db = client.db("User_Login_Signup");
+        let allUsers = await db.collection("Users").find({}).toArray()
+        if (allUsers.length) {
+            res.status(200).send(allUsers)
+        }
+        else {
+            res.send({ message: "No user data found" })
+        }
     }
     catch (error) {
         console.log(error)
@@ -26,26 +31,21 @@ app.get('/', async (req, res) => {
 })
 
 // creating new user account
-app.post('/userSignup', async (req, res) => {
+app.post('/signup', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
-        if (req.body.name && req.body.username && req.body.email && req.body.password) {
-            const db = await client.db("UserLoginSignup");
-            let user = await db.collection("User Registration").findOne({ email: req.body.email })
-            if (!user) {
-                await db.collection("User Registration").insertOne(req.body);
-                res.status(201).send({ message: 'User signup successful', data: req.body })
-            }
-            else {
-                res.status(400).send({ message: `User with email id ${req.body.email} already exist` })
-            }
+        const db = client.db("User_Login_Signup");
+        let user = await db.collection("Users").aggregate([{ $match: { email: req.body.email } }]).toArray()
+        if (user.length === 0) {
+            await db.collection("Users").insertOne(req.body);
+            res.status(201).send({ message: 'signup successful', data: req.body })
         }
         else {
-            res.status(400).send({ message: 'name, username, email, password are mandatory' })
+            res.send({ message: `email Id already exist` })
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(500).send({ message: 'Internal server error', error })
     }
     finally {
@@ -54,25 +54,20 @@ app.post('/userSignup', async (req, res) => {
 })
 
 // user login
-app.get('/userLogin/:username/:password', async (req, res) => {
+app.get('/login/:email/:password', async (req, res) => {
     const client = await MongoClient.connect(dbUrl);
     try {
-        if (req.params.username && req.params.password) {
-            const db = await client.db("UserLoginSignup");
-            let user = await db.collection("User Registration").findOne({ username: req.params.username, password: req.params.password })
-            if (user) {
-                res.status(200).send({ message: 'Login successful', data: user })
-            }
-            else {
-                res.status(400).send({ message: `User not found with username ${req.params.username} and password ${req.params.password}` })
-            }
+        const db = client.db("User_Login_Signup");
+        let user = await db.collection("Users").aggregate([{ $match: { email: req.params.email, password: req.params.password } }]).toArray()
+        if (user.length) {
+            res.status(200).send({ message: 'Login successful', data: user })
         }
         else {
-            res.status(400).send({ message: 'userEmail and userPassword are mandatory' })
+            res.send({ message: `Invalid login credentials` })
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(500).send({ message: 'Internal server error', error })
     }
     finally {
@@ -80,4 +75,4 @@ app.get('/userLogin/:username/:password', async (req, res) => {
     }
 })
 
-app.listen(4000, () => { console.log('App is listening on 4000'); })
+app.listen(4500, () => { console.log('App is listening on 4000'); })
